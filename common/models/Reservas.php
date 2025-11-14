@@ -181,6 +181,32 @@ class Reservas extends \yii\db\ActiveRecord
         ];
     }
 
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        if ($insert && empty($this->cod_valid)) {
+            $this->cod_valid = $this->generateValidationCode(48);
+        }
+
+        return true;
+    }
+
+    private function generateValidationCode($length)
+    {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        $charactersLength = strlen($characters);
+        $token = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $token .= substr($characters, random_int(0, $charactersLength - 1), 1);
+        }
+
+        return $token;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
