@@ -1,0 +1,33 @@
+# prevent directory listings
+#Options -Indexes
+#IndexIgnore */*
+
+# follow symbolic links
+#Options FollowSymlinks
+#RewriteEngine on
+#RewriteRule ^admin(/.+)?$ backend/web/$1 [L,PT]
+#RewriteRule ^(.+)?$ frontend/web/$1
+
+# prevent directory listings
+Options -Indexes
+IndexIgnore */*
+
+# follow symbolic links
+#Options FollowSymlinks
+RewriteEngine on
+
+# Evita redirección en la raíz
+RewriteCond %{REQUEST_URI} ^/$
+RewriteRule ^$ index.html [L]
+
+# Redirigir /admin a backend/web/
+RewriteRule ^admin(/.+)?$ backend/web/$1 [L,PT]
+
+# Redirigir otras rutas a frontend/web/, pero sin afectar /
+RewriteCond %{REQUEST_URI} !^/$
+RewriteRule ^(.+)$ frontend/web/$1 [L]
+
+# --- CÓDIGO VIEJO COMENTADO ---
+# RewriteEngine on
+# RewriteRule ^admin(/.+)?$ backend/web/$1 [L,PT]
+# RewriteRule ^(.+)?$ frontend/web/$1

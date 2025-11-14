@@ -1,0 +1,20 @@
+var swiper = new Swiper('.swiper-container', {
+    navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+    },
+});
+$(".accordion-titulo").click(function () {
+
+    var contenido = $(this).next(".accordion-content");
+
+    if (contenido.css("display") == "none") { //open		
+        contenido.slideDown(250);
+        $(this).addClass("open");
+    }
+    else { //close		
+        contenido.slideUp(250);
+        $(this).removeClass("open");
+    }
+
+});
