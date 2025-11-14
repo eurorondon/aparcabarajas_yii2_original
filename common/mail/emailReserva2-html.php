@@ -336,12 +336,12 @@ use yii\helpers\Html;
 														<br>
 														<div style="font-weight:700!important">Para Modificación /
 															Cancelación haga click en el siguiente enlace: <a
-																href="https://aparcabarajas.es/aparcamiento/site/update?codId=<?= Html::encode($nro_reserva) ?>&codValid=<?= $token ?>">Modificar
+                                                                                                                          href="https://aparcabarajas.es/aparcamiento/site/update?codId=<?= Html::encode($nro_reserva) ?>&codValid=<?= Html::encode($token) ?>">Modificar
 																/ Cancelar reserva</a> </div>
 														<div style="font-weight:700!important">Si se le olvido hacer la
 															solicitud de factura al momento de realizar la reserva haga
 															click en el siguiente enlace: <a
-																href="https://aparcabarajas.es/aparcamiento/site/update?invoice=1&codId=<?= Html::encode($nro_reserva) ?>&codValid=<?= $token ?>">Solicitar
+                                                                                                                          href="https://aparcabarajas.es/aparcamiento/site/update?invoice=1&codId=<?= Html::encode($nro_reserva) ?>&codValid=<?= Html::encode($token) ?>">Solicitar
 																factura</a> </div>
 														Se puede <b> modificar/cancelar</b> hasta 24 horas antes de la
 														hora de llegada.<br>

@@ -1397,6 +1397,7 @@ class ReservasController extends Controller
                             'hora_entrada' => $model->hora_entrada,
                             'fecha_salida' => $fecha2,
                             'hora_salida' => $model->hora_salida,
+                            'token' => $model->cod_valid,
                         ]
                     );
                     $correo->setTo($mail)
@@ -1690,14 +1691,15 @@ class ReservasController extends Controller
                         'html' => 'emailReserva2-html',
                         'text' => 'emailReserva-text'
                     ],
-                    [
-                        'nro_reserva' => $reserva,
-                        'fecha_entrada' => $model->fecha_entrada,
-                        'hora_entrada' => $model->hora_entrada,
-                        'fecha_salida' => $model->fecha_salida,
-                        'hora_salida' => $model->hora_salida,
-                    ]
-                );
+                [
+                    'nro_reserva' => $reserva,
+                    'fecha_entrada' => $model->fecha_entrada,
+                    'hora_entrada' => $model->hora_entrada,
+                    'fecha_salida' => $model->fecha_salida,
+                    'hora_salida' => $model->hora_salida,
+                    'token' => $model->cod_valid,
+                ]
+            );
                 $correo->setTo($mail)
                     ->setFrom([Yii::$app->params['reservasEmail'] => 'Reservas - ' . Yii::$app->name])
                     ->setSubject('Reservación Aparcabarajas - Modificada')
@@ -2629,6 +2631,7 @@ class ReservasController extends Controller
                     'hora_entrada' => $hora_entrada,
                     'fecha_salida' => $fecha_salida,
                     'hora_salida' => $hora_salida,
+                    'token' => $buscaReserva->cod_valid,
                 ]
             );
 
