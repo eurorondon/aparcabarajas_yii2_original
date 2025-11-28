@@ -2222,8 +2222,10 @@ class ReservasController extends Controller
                 /*$montosiniva =  round(($datos_reserva->monto_total / $iva), 2);
                 $montoiva = round(($datos_reserva->monto_factura - $montosiniva),2); */
 
-                $modelFactura->monto_factura = round(($datos_reserva->monto_total / $iva), 2);
-                $modelFactura->monto_impuestos = round(($datos_reserva->monto_total - $datos_reserva->monto_factura), 2);
+                $montoSinIva = round(($datos_reserva->monto_total / $iva), 2);
+
+                $modelFactura->monto_factura = $montoSinIva;
+                $modelFactura->monto_impuestos = round(($datos_reserva->monto_total - $montoSinIva), 2);
                 $modelFactura->monto_total = $datos_reserva->monto_total;
 
                 $modelFactura->id_tipo_pago = $datos_reserva->id_tipo_pago;
