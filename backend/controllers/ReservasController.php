@@ -527,7 +527,6 @@ class ReservasController extends Controller
             $dataProvider1->pagination->pageSize = 10;
             $dataProvider2->pagination->pageSize = 100;
             $dataProvider3->pagination->pageSize = 100;
-
         } else {
 
             $fecha = '';
@@ -620,11 +619,8 @@ class ReservasController extends Controller
                         $rezagadas = $rezagadas + 1;
                     }
                 }
-
-
             }
             return ($cuenta . '/' . $pendientes . '/' . $activas . '/' . $rezagadas . '/' . $finalizadas . '/' . $canceladas);
-
         }
     }
 
@@ -887,7 +883,6 @@ class ReservasController extends Controller
             'medio' => $medio,
             'agencia' => $agencia,
         ]);
-
     }
 
     public function actionActualizar($id)
@@ -1362,7 +1357,7 @@ class ReservasController extends Controller
             $reserva = $model->nro_reserva;
 
             if ($_POST['envio_email'] == 1) {
-                
+
                 $buscarCorreo = Clientes::find()->where(['id' => $id_cliente])->one();
                 $mail = $buscarCorreo->correo;
                 $content = $this->renderPartial('_reportView', ['model' => $this->findModel($model->id)]);
@@ -1384,7 +1379,7 @@ class ReservasController extends Controller
 
                 $pdf->render();
 
-            
+
                 if ($mail != null) {
                     $correo = Yii::$app->mailer->compose(
                         [
@@ -1710,7 +1705,6 @@ class ReservasController extends Controller
 
             Yii::$app->session->setFlash('success', 'La Reserva ha sido modificada de manera exitosa.');
             return $this->redirect(['reservas/index']);
-
         }
 
         return $this->render('update', [
@@ -1797,7 +1791,6 @@ class ReservasController extends Controller
             'listaR' => $listaR,
             'listaE' => $listaE,
         ]);
-
     }
 
     public function actionValoracion()
@@ -1836,7 +1829,6 @@ class ReservasController extends Controller
         return $this->renderAjax('valoracion', [
             'listaClientes' => $listaClientes,
         ]);
-
     }
 
     public function actionCheckin()
@@ -1875,7 +1867,6 @@ class ReservasController extends Controller
         return $this->renderAjax('checkin', [
             'listaReservas' => $listaReservas,
         ]);
-
     }
 
     public function actionViewPdf($id)
@@ -2008,7 +1999,6 @@ class ReservasController extends Controller
             }
         }
         return $pdf->render();
-
     }
 
 
@@ -2222,8 +2212,10 @@ class ReservasController extends Controller
                 /*$montosiniva =  round(($datos_reserva->monto_total / $iva), 2);
                 $montoiva = round(($datos_reserva->monto_factura - $montosiniva),2); */
 
-                $modelFactura->monto_factura = round(($datos_reserva->monto_total / $iva), 2);
-                $modelFactura->monto_impuestos = round(($datos_reserva->monto_total - $datos_reserva->monto_factura), 2);
+                $montoSinIva = round(($datos_reserva->monto_total / $iva), 2);
+
+                $modelFactura->monto_factura = $montoSinIva;
+                $modelFactura->monto_impuestos = round(($datos_reserva->monto_total - $montoSinIva), 2);
                 $modelFactura->monto_total = $datos_reserva->monto_total;
 
                 $modelFactura->id_tipo_pago = $datos_reserva->id_tipo_pago;
@@ -2416,9 +2408,6 @@ class ReservasController extends Controller
                 ]);
                 return $pdf->render();
             }
-
-
-
         }
 
         return $this->renderAjax('ticketPlanning', [
@@ -2638,10 +2627,10 @@ class ReservasController extends Controller
 
             if (
                 $correo->setTo($email_cliente)
-                    ->setFrom([Yii::$app->params['reservasEmail'] => 'Reservas - ' . Yii::$app->name])
-                    ->setSubject('Reservación Aparcabarajas')
-                    ->attach('../web/pdf/comprobante_' . $nro_reserva . '.pdf')
-                    ->send()
+                ->setFrom([Yii::$app->params['reservasEmail'] => 'Reservas - ' . Yii::$app->name])
+                ->setSubject('Reservación Aparcabarajas')
+                ->attach('../web/pdf/comprobante_' . $nro_reserva . '.pdf')
+                ->send()
             ) {
                 Yii::$app->session->setFlash('success', 'El envio del Comprobante ha sido enviada de manera exitosa Sr Usuario.');
             }
