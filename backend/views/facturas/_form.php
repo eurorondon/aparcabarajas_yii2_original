@@ -211,22 +211,33 @@ use kartik\select2\Select2;
 </div>
 
 <?php   
-    $this->registerJs(" 
+    $this->registerJs("
+
+        function getIvaRate() {
+            var ivaValue = parseFloat($('#facturas-iva').val() || 0);
+            if (ivaValue >= 2) {
+                return ivaValue / 100;
+            }
+            if (ivaValue > 1) {
+                return ivaValue - 1;
+            }
+            return ivaValue;
+        }
 
         $('#concepto_punitario').change(function() {
             preu = $('#concepto_punitario').val()
             $('#concepto_cantidad').val(1)
             $('#concepto_ptotal').val(preu)
-           
-            imp = $('#facturas-iva').val();
-           
-            var sub_total = parseFloat($('#concepto_ptotal').val() / imp);
-            var valorimpuesto = parseFloat($('#concepto_ptotal').val() - sub_total.toFixed(2) );
+
+            var ivaRate = getIvaRate();
+
+            var baseConcepto = parseFloat($('#concepto_ptotal').val()) / (1 + ivaRate);
+            var valorimpuesto = parseFloat($('#concepto_ptotal').val() - baseConcepto.toFixed(2));
 
             $('#facturas-monto_impuestos').val(valorimpuesto.toFixed(2))
-            $('#facturas-monto_factura').val(sub_total.toFixed(2))
-            
-            mtotal = sub_total + valorimpuesto;
+            $('#facturas-monto_factura').val(baseConcepto.toFixed(2))
+
+            mtotal = baseConcepto + valorimpuesto;
             
              
            $('#facturas-monto_total').val(mtotal.toFixed(2));
@@ -238,14 +249,14 @@ use kartik\select2\Select2;
             c = $('#concepto_cantidad').val()
             concepto_total = (pu*c) 
             $('#concepto_ptotal').val(concepto_total.toFixed(2))
-            imp = $('#facturas-iva').val();
+            var ivaRate = getIvaRate();
 
-            var sub_total = parseFloat($('#concepto_ptotal').val() / imp);
-            valorimpuesto = parseFloat($('#concepto_ptotal').val() - sub_total.toFixed(2) );
+            var baseConcepto = parseFloat($('#concepto_ptotal').val()) / (1 + ivaRate);
+            valorimpuesto = parseFloat($('#concepto_ptotal').val() - baseConcepto.toFixed(2));
 
             $('#facturas-monto_impuestos').val(valorimpuesto.toFixed(2))
-            $('#facturas-monto_factura').val(sub_total.toFixed(2))
-            var montot = sub_total + valorimpuesto;
+            $('#facturas-monto_factura').val(baseConcepto.toFixed(2))
+            var montot = baseConcepto + valorimpuesto;
             $('#facturas-monto_total').val(montot.toFixed(2));
 
         })        
@@ -353,15 +364,15 @@ use kartik\select2\Select2;
                     if (cant == 29) { var total = parseFloat(precio29); }
                     if (cant == 30) { var total = parseFloat(precio30); } 
 
-                    if (cant > 30) { 
+                    if (cant > 30) {
                         var cant_dias = cant - 30;
                         var cuota_dia = $('#cuota_dia').val();
-                        var imp = $('#facturas-iva').val();
-                        var cuotaiva = parseFloat(cuota_dia) / (parseFloat(imp) + 1)
+                        var ivaRate = getIvaRate();
+                        var cuotaiva = parseFloat(cuota_dia) / (1 + ivaRate)
                         var nueva_cuota = cuotaiva.toFixed(3)
                         alert(nueva_cuota)
                         var precio_relativo = parseFloat(precio30);
-                        var total = precio_relativo + (cant_dias * nueva_cuota); 
+                        var total = precio_relativo + (cant_dias * nueva_cuota);
                     }
 
                     $('#precio_total'+ id).val(total.toFixed(2));
@@ -387,15 +398,15 @@ use kartik\select2\Select2;
 
         $('#subtotal-factura').click(function() {
             var monto_subtotal = 0;
-            var imp = $('#facturas-iva').val();
+            var ivaRate = getIvaRate();
             $('.servicios:checked').each(function() {
                 var id = $(this).val();
                 var precio = $('#precio_total'+ id).val();
                 monto_subtotal = parseFloat(monto_subtotal) + parseFloat(precio);
-            });             
+            });
 
 
-            var impuestos = parseFloat(monto_subtotal - (monto_subtotal / imp));
+            var impuestos = parseFloat(monto_subtotal - (monto_subtotal / (1 + ivaRate)));
             var sub_total = parseFloat(monto_subtotal.toFixed(2) - impuestos.toFixed(2));
             $('#facturas-monto_factura').val(sub_total.toFixed(2));
             
