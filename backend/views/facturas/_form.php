@@ -211,44 +211,71 @@ use kartik\select2\Select2;
 </div>
 
 <?php   
-    $this->registerJs(" 
+    $this->registerJs("
+
+        function getIvaRate() {
+            var ivaValue = parseFloat($('#facturas-iva').val() || 0);
+
+            // Normalize raw config values that may be expressed as 21, 1.21, or 0.21
+            if (ivaValue >= 2) {
+                ivaValue = ivaValue / 100;
+            }
+
+            if (ivaValue > 1) {
+                ivaValue = ivaValue - 1;
+            }
+
+            return ivaValue;
+        }
+
+        function parseAmount(raw) {
+            if (!raw) {
+                return 0;
+            }
+
+            return parseFloat(raw.toString().replace(',', '.')) || 0;
+        }
+
+        function calcularTotalesFactura() {
+            var ivaRate = getIvaRate();
+            var monto_subtotal = 0;
+
+            $('.servicios:checked').each(function() {
+                var id = $(this).val();
+                var precio = parseAmount($('#precio_total' + id).val());
+                monto_subtotal = monto_subtotal + precio;
+            });
+
+            var concepto_total = parseAmount($('#concepto_ptotal').val());
+            var montoBruto = monto_subtotal + concepto_total;
+
+            var base = montoBruto / (1 + ivaRate);
+            var impuestos = montoBruto - base;
+
+            $('#facturas-monto_factura').val(base.toFixed(2));
+            $('#facturas-monto_impuestos').val(impuestos.toFixed(2));
+            $('#facturas-monto_total').val((base + impuestos).toFixed(2));
+
+            $('#impuestos-factura').text('I.V.A (' + (ivaRate * 100).toFixed(0) + '%)');
+        }
 
         $('#concepto_punitario').change(function() {
-            preu = $('#concepto_punitario').val()
-            $('#concepto_cantidad').val(1)
-            $('#concepto_ptotal').val(preu)
-           
-            imp = $('#facturas-iva').val();
-           
-            var sub_total = parseFloat($('#concepto_ptotal').val() / imp);
-            var valorimpuesto = parseFloat($('#concepto_ptotal').val() - sub_total.toFixed(2) );
+            var preu = parseAmount($('#concepto_punitario').val());
+            $('#concepto_cantidad').val(1);
+            $('#concepto_ptotal').val(preu.toFixed(2));
 
-            $('#facturas-monto_impuestos').val(valorimpuesto.toFixed(2))
-            $('#facturas-monto_factura').val(sub_total.toFixed(2))
-            
-            mtotal = sub_total + valorimpuesto;
-            
-             
-           $('#facturas-monto_total').val(mtotal.toFixed(2));
-
-        })
+            calcularTotalesFactura();
+        });
 
         $('#concepto_cantidad').change(function() {
-            pu = $('#concepto_punitario').val()
-            c = $('#concepto_cantidad').val()
-            concepto_total = (pu*c) 
-            $('#concepto_ptotal').val(concepto_total.toFixed(2))
-            imp = $('#facturas-iva').val();
+            var pu = parseAmount($('#concepto_punitario').val());
+            var c = parseAmount($('#concepto_cantidad').val());
+            var concepto_total = (pu * c);
+            $('#concepto_ptotal').val(concepto_total.toFixed(2));
 
-            var sub_total = parseFloat($('#concepto_ptotal').val() / imp);
-            valorimpuesto = parseFloat($('#concepto_ptotal').val() - sub_total.toFixed(2) );
+            calcularTotalesFactura();
 
-            $('#facturas-monto_impuestos').val(valorimpuesto.toFixed(2))
-            $('#facturas-monto_factura').val(sub_total.toFixed(2))
-            var montot = sub_total + valorimpuesto;
-            $('#facturas-monto_total').val(montot.toFixed(2));
-
-        })        
+        })
 
         $('#checkAll').change(function() {
             $('.select:checked').each(function() {
@@ -353,15 +380,14 @@ use kartik\select2\Select2;
                     if (cant == 29) { var total = parseFloat(precio29); }
                     if (cant == 30) { var total = parseFloat(precio30); } 
 
-                    if (cant > 30) { 
+                    if (cant > 30) {
                         var cant_dias = cant - 30;
                         var cuota_dia = $('#cuota_dia').val();
-                        var imp = $('#facturas-iva').val();
-                        var cuotaiva = parseFloat(cuota_dia) / (parseFloat(imp) + 1)
+                        var ivaRate = getIvaRate();
+                        var cuotaiva = parseFloat(cuota_dia) / (1 + ivaRate)
                         var nueva_cuota = cuotaiva.toFixed(3)
-                        alert(nueva_cuota)
                         var precio_relativo = parseFloat(precio30);
-                        var total = precio_relativo + (cant_dias * nueva_cuota); 
+                        var total = precio_relativo + (cant_dias * nueva_cuota);
                     }
 
                     $('#precio_total'+ id).val(total.toFixed(2));
@@ -386,31 +412,10 @@ use kartik\select2\Select2;
         }) 
 
         $('#subtotal-factura').click(function() {
-            var monto_subtotal = 0;
-            var imp = $('#facturas-iva').val();
-            $('.servicios:checked').each(function() {
-                var id = $(this).val();
-                var precio = $('#precio_total'+ id).val();
-                monto_subtotal = parseFloat(monto_subtotal) + parseFloat(precio);
-            });             
+            calcularTotalesFactura();
 
 
-            var impuestos = parseFloat(monto_subtotal - (monto_subtotal / imp));
-            var sub_total = parseFloat(monto_subtotal.toFixed(2) - impuestos.toFixed(2));
-            $('#facturas-monto_factura').val(sub_total.toFixed(2));
-            
-            /*$('#facturas-monto_factura').val(monto_subtotal.toFixed(2));
-            var impuestos = monto_subtotal * imp;
-            $('#facturas-monto_impuestos').val(impuestos.toFixed(3));*/
-            
-            /*var impuestos = parseFloat( monto_subtotal - (monto_subtotal / imp));*/
-            $('#facturas-monto_impuestos').val(impuestos.toFixed(2));
-            
-            var total_monto = parseFloat(sub_total) + parseFloat(impuestos);
-            $('#facturas-monto_total').val(total_monto.toFixed(2));
-
-
-        }); 
+        });
  
     ");
 ?>
