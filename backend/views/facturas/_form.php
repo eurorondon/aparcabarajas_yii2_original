@@ -218,18 +218,19 @@ use kartik\select2\Select2;
             $('#concepto_cantidad').val(1)
             $('#concepto_ptotal').val(preu)
            
-            imp = $('#facturas-iva').val();
-           
-            var sub_total = parseFloat($('#concepto_ptotal').val() / imp);
-            var valorimpuesto = parseFloat($('#concepto_ptotal').val() - sub_total.toFixed(2) );
+            var imp = parseFloat($('#facturas-iva').val());
+            var ivaRate = imp > 1 ? imp - 1 : imp;
+
+            var sub_total = parseFloat($('#concepto_ptotal').val());
+            var valorimpuesto = sub_total * ivaRate;
 
             $('#facturas-monto_impuestos').val(valorimpuesto.toFixed(2))
             $('#facturas-monto_factura').val(sub_total.toFixed(2))
-            
-            mtotal = sub_total + valorimpuesto;
-            
-             
-           $('#facturas-monto_total').val(mtotal.toFixed(2));
+
+            var mtotal = sub_total + valorimpuesto;
+
+
+            $('#facturas-monto_total').val(mtotal.toFixed(2));
 
         })
 
@@ -238,10 +239,11 @@ use kartik\select2\Select2;
             c = $('#concepto_cantidad').val()
             concepto_total = (pu*c) 
             $('#concepto_ptotal').val(concepto_total.toFixed(2))
-            imp = $('#facturas-iva').val();
+            var imp = parseFloat($('#facturas-iva').val());
+            var ivaRate = imp > 1 ? imp - 1 : imp;
 
-            var sub_total = parseFloat($('#concepto_ptotal').val() / imp);
-            valorimpuesto = parseFloat($('#concepto_ptotal').val() - sub_total.toFixed(2) );
+            var sub_total = parseFloat($('#concepto_ptotal').val());
+            var valorimpuesto = sub_total * ivaRate;
 
             $('#facturas-monto_impuestos').val(valorimpuesto.toFixed(2))
             $('#facturas-monto_factura').val(sub_total.toFixed(2))
@@ -387,25 +389,19 @@ use kartik\select2\Select2;
 
         $('#subtotal-factura').click(function() {
             var monto_subtotal = 0;
-            var imp = $('#facturas-iva').val();
+            var imp = parseFloat($('#facturas-iva').val());
+            var ivaRate = imp > 1 ? imp - 1 : imp;
             $('.servicios:checked').each(function() {
                 var id = $(this).val();
                 var precio = $('#precio_total'+ id).val();
                 monto_subtotal = parseFloat(monto_subtotal) + parseFloat(precio);
             });             
+            var impuestos = monto_subtotal * ivaRate;
+            var sub_total = monto_subtotal;
 
-
-            var impuestos = parseFloat(monto_subtotal - (monto_subtotal / imp));
-            var sub_total = parseFloat(monto_subtotal.toFixed(2) - impuestos.toFixed(2));
             $('#facturas-monto_factura').val(sub_total.toFixed(2));
-            
-            /*$('#facturas-monto_factura').val(monto_subtotal.toFixed(2));
-            var impuestos = monto_subtotal * imp;
-            $('#facturas-monto_impuestos').val(impuestos.toFixed(3));*/
-            
-            /*var impuestos = parseFloat( monto_subtotal - (monto_subtotal / imp));*/
             $('#facturas-monto_impuestos').val(impuestos.toFixed(2));
-            
+
             var total_monto = parseFloat(sub_total) + parseFloat(impuestos);
             $('#facturas-monto_total').val(total_monto.toFixed(2));
 
