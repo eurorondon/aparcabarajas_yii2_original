@@ -228,42 +228,54 @@ use kartik\select2\Select2;
             return ivaValue;
         }
 
-        $('#concepto_punitario').change(function() {
-            preu = $('#concepto_punitario').val()
-            $('#concepto_cantidad').val(1)
-            $('#concepto_ptotal').val(preu)
+        function parseAmount(raw) {
+            if (!raw) {
+                return 0;
+            }
 
+            return parseFloat(raw.toString().replace(',', '.')) || 0;
+        }
+
+        function calcularTotalesFactura() {
             var ivaRate = getIvaRate();
+            var monto_subtotal = 0;
 
-            var baseConcepto = parseFloat($('#concepto_ptotal').val()) / (1 + ivaRate);
-            var valorimpuesto = parseFloat($('#concepto_ptotal').val() - baseConcepto.toFixed(2));
+            $('.servicios:checked').each(function() {
+                var id = $(this).val();
+                var precio = parseAmount($('#precio_total' + id).val());
+                monto_subtotal = monto_subtotal + precio;
+            });
 
-            $('#facturas-monto_impuestos').val(valorimpuesto.toFixed(2))
-            $('#facturas-monto_factura').val(baseConcepto.toFixed(2))
+            var concepto_total = parseAmount($('#concepto_ptotal').val());
+            var montoBruto = monto_subtotal + concepto_total;
 
-            mtotal = baseConcepto + valorimpuesto;
-            
-             
-           $('#facturas-monto_total').val(mtotal.toFixed(2));
+            var base = montoBruto / (1 + ivaRate);
+            var impuestos = montoBruto - base;
 
-        })
+            $('#facturas-monto_factura').val(base.toFixed(2));
+            $('#facturas-monto_impuestos').val(impuestos.toFixed(2));
+            $('#facturas-monto_total').val((base + impuestos).toFixed(2));
+
+            $('#impuestos-factura').text('I.V.A (' + (ivaRate * 100).toFixed(0) + '%)');
+        }
+
+        $('#concepto_punitario').change(function() {
+            var preu = parseAmount($('#concepto_punitario').val());
+            $('#concepto_cantidad').val(1);
+            $('#concepto_ptotal').val(preu.toFixed(2));
+
+            calcularTotalesFactura();
+        });
 
         $('#concepto_cantidad').change(function() {
-            pu = $('#concepto_punitario').val()
-            c = $('#concepto_cantidad').val()
-            concepto_total = (pu*c) 
-            $('#concepto_ptotal').val(concepto_total.toFixed(2))
-            var ivaRate = getIvaRate();
+            var pu = parseAmount($('#concepto_punitario').val());
+            var c = parseAmount($('#concepto_cantidad').val());
+            var concepto_total = (pu * c);
+            $('#concepto_ptotal').val(concepto_total.toFixed(2));
 
-            var baseConcepto = parseFloat($('#concepto_ptotal').val()) / (1 + ivaRate);
-            valorimpuesto = parseFloat($('#concepto_ptotal').val() - baseConcepto.toFixed(2));
+            calcularTotalesFactura();
 
-            $('#facturas-monto_impuestos').val(valorimpuesto.toFixed(2))
-            $('#facturas-monto_factura').val(baseConcepto.toFixed(2))
-            var montot = baseConcepto + valorimpuesto;
-            $('#facturas-monto_total').val(montot.toFixed(2));
-
-        })        
+        })
 
         $('#checkAll').change(function() {
             $('.select:checked').each(function() {
@@ -374,7 +386,6 @@ use kartik\select2\Select2;
                         var ivaRate = getIvaRate();
                         var cuotaiva = parseFloat(cuota_dia) / (1 + ivaRate)
                         var nueva_cuota = cuotaiva.toFixed(3)
-                        alert(nueva_cuota)
                         var precio_relativo = parseFloat(precio30);
                         var total = precio_relativo + (cant_dias * nueva_cuota);
                     }
@@ -401,31 +412,10 @@ use kartik\select2\Select2;
         }) 
 
         $('#subtotal-factura').click(function() {
-            var monto_subtotal = 0;
-            var ivaRate = getIvaRate();
-            $('.servicios:checked').each(function() {
-                var id = $(this).val();
-                var precio = $('#precio_total'+ id).val();
-                monto_subtotal = parseFloat(monto_subtotal) + parseFloat(precio);
-            });
+            calcularTotalesFactura();
 
 
-            var impuestos = parseFloat(monto_subtotal - (monto_subtotal / (1 + ivaRate)));
-            var sub_total = parseFloat(monto_subtotal.toFixed(2) - impuestos.toFixed(2));
-            $('#facturas-monto_factura').val(sub_total.toFixed(2));
-            
-            /*$('#facturas-monto_factura').val(monto_subtotal.toFixed(2));
-            var impuestos = monto_subtotal * imp;
-            $('#facturas-monto_impuestos').val(impuestos.toFixed(3));*/
-            
-            /*var impuestos = parseFloat( monto_subtotal - (monto_subtotal / imp));*/
-            $('#facturas-monto_impuestos').val(impuestos.toFixed(2));
-            
-            var total_monto = parseFloat(sub_total) + parseFloat(impuestos);
-            $('#facturas-monto_total').val(total_monto.toFixed(2));
-
-
-        }); 
+        });
  
     ");
 ?>
