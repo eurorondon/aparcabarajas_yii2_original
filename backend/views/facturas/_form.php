@@ -215,12 +215,16 @@ use kartik\select2\Select2;
 
         function getIvaRate() {
             var ivaValue = parseFloat($('#facturas-iva').val() || 0);
+
+            // Normalize raw config values that may be expressed as 21, 1.21, or 0.21
             if (ivaValue >= 2) {
-                return ivaValue / 100;
+                ivaValue = ivaValue / 100;
             }
+
             if (ivaValue > 1) {
-                return ivaValue - 1;
+                ivaValue = ivaValue - 1;
             }
+
             return ivaValue;
         }
 
