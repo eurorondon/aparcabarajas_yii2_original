@@ -59,7 +59,7 @@ for ($i = 0; $i < count($model); $i++) { ?>
 				<?= Html::img('@web/images/techado.png', ['style' => ['width' => '25px']]); ?>
 			</div>
 
-		<?php }
+	<?php }
 	}
 	?>
 
@@ -73,12 +73,16 @@ for ($i = 0; $i < count($model); $i++) { ?>
 		<b><?= date('H i', strtotime($model[$i]->created_at)) ?></b>
 	</div>
 
-	<div align="right" style="text-transform: uppercase; font-size: 12px">Importe : <b><?= $model[$i]->monto_total ?> €</b>
+	<!-- CORRECCIÓN DE NEGRILLA PARA 'IMPORTE :' -->
+	<div align="right" style="text-transform: uppercase; font-size: 12px">
+		<span style="font-weight: normal;">Importe :</span> <b><?= $model[$i]->monto_total ?> €</b>
 		<?php if ($model[$i]->cupon != null || $model[$i]->descuento == 'SI') { ?>
 			<br><span style="font-size:9px;">(Descuento Aplicado)</span>
 		<?php } ?>
 	</div>
-	<div align="right" style="text-transform: uppercase; font-size: 12px">Teléfono :
+	<!-- CORRECCIÓN DE NEGRILLA PARA 'Teléfono :' -->
+	<div align="right" style="text-transform: uppercase; font-size: 12px">
+		<span style="font-weight: normal;">Telf :</span>
 		<b><?= $model[$i]->cliente->movil ?></b>
 	</div>
 
@@ -115,7 +119,7 @@ for ($i = 0; $i < count($model); $i++) { ?>
 			<td rowspan="2">
 				<span style="font-size: 22px; margin-left: 15px;">
 					<?php
-					if (empty($model[$i]->terminal_entrada)) {
+					if (empty($model[$i]->terminal_entrada) || $model[$i]->terminal_entrada == "AUN NO CONOZCO LA TERMINAL") {
 						echo "T&nbsp;&nbsp;";
 					} else {
 						$term = explode(" ", $model[$i]->terminal_entrada);
@@ -146,7 +150,7 @@ for ($i = 0; $i < count($model); $i++) { ?>
 			<td rowspan="2" style="padding-right: 25px">
 				<span style="font-size: 22px; margin-left: 15px;">
 					<?php
-					if (empty($model[$i]->terminal_salida)) {
+					if (empty($model[$i]->terminal_salida) || $model[$i]->terminal_salida == "AUN NO CONOZCO LA TERMINAL") {
 						echo "T&nbsp;&nbsp;";
 					} else {
 						$term = explode(" ", $model[$i]->terminal_salida);
@@ -166,7 +170,7 @@ for ($i = 0; $i < count($model); $i++) { ?>
 	</table>
 
 	<hr style="margin: 5px 0px">
-	<?php if ($contS[$i] > 0) { ?>
+	<?php if (isset($contS[$i]) && $contS[$i] > 0) { ?>
 		<div style="margin-bottom: 5px"><b>INCLUYE:</b></div>
 
 
@@ -176,25 +180,26 @@ for ($i = 0; $i < count($model); $i++) { ?>
 
 			if ($servicios[$i][$l]->servicios->fijo == 2) {
 				$c++;
-				?>
+		?>
 				<div style="margin-bottom: 2px; text-transform: uppercase; font-size: 10px;">
 					<?= $servicios[$i][$l]->servicios->nombre_servicio ?>
 				</div>
 
-			<?php }
+		<?php }
 		}
 		?>
 
 	<?php } ?>
 
 	<?php
-	if ($contS[$i] == 0) {
+	// He añadido isset() a $contS[$i] para evitar un posible error si esa variable no está definida
+	if (isset($contS[$i]) && $contS[$i] == 0) {
 		echo "<br><br><br><br><br><br><br><br><br><br>";
 	}
-	if ($contS[$i] == 1) {
+	if (isset($contS[$i]) && $contS[$i] == 1) {
 		echo "<br><br><br><br><br><br><br>";
 	}
-	if ($contS[$i] == 2) {
+	if (isset($contS[$i]) && $contS[$i] == 2) {
 		echo "<br><br><br><br><br>";
 	}
 	?>

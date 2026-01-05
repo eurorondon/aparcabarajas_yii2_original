@@ -4,27 +4,27 @@ use yii\helpers\Html;
 
 $char_color = strlen($model->coche->color);
 
-if ($char_color < 3 ) {
-    $color = 'N/D';
+if ($char_color < 3) {
+	$color = 'N/D';
 } else {
-    $color = $model->coche->color;
+	$color = $model->coche->color;
 }
 
-if (empty($model->coche->matricula)) { 
-    $model->coche->matricula = 'N/D';
+if (empty($model->coche->matricula)) {
+	$model->coche->matricula = 'N/D';
 }
 
 if (empty($model->coche->marca)) {
-    $model->coche->marca = 'N/D';
+	$model->coche->marca = 'N/D';
 }
 
 if (empty($model->cliente->movil)) {
-    $model->cliente->movil = 'N/D';
+	$model->cliente->movil = 'N/D';
 }
 
 if ($model->medio_reserva === 1) {
 	$medio = 'phone-24.png';
-}   
+}
 if ($model->medio_reserva === 2) {
 	$medio = 'tags.png';
 }
@@ -46,130 +46,131 @@ foreach ($servicios as $servicie) {
 ?>
 
 <<div style="position: absolute; font-size: 17px; font-weight: bolder; font-family: sans-serif;"><b><?= $model->nro_reserva ?></b></div>
-<div style="position: absolute; top: 43px; font-size: 12px; font-weight: bolder; font-family: sans-serif;">
-	<b>FC: <?= date('d m Y', strtotime($model->created_at))?></b>
-</div>
-<div style="position: absolute;left: 50px; top: 55px; font-size: 12px; font-weight: bolder; font-family: sans-serif;">
-	<b><?= date('H i', strtotime($model->created_at))?></b>
-</div>
+	<div style="position: absolute; top: 43px; font-size: 12px; font-weight: bolder; font-family: sans-serif;">
+		<b>FC: <?= date('d m Y', strtotime($model->created_at)) ?></b>
+	</div>
+	<div style="position: absolute;left: 50px; top: 55px; font-size: 12px; font-weight: bolder; font-family: sans-serif;">
+		<b><?= date('H i', strtotime($model->created_at)) ?></b>
+	</div>
 
-<div style="position: absolute; top: 80px; font-size: 17px; font-weight: bolder; font-family: sans-serif;">
-	<?= Html::img('@web/images/'.$medio, ['style'=> ['width' => '20px']]);?>
-</div>
+	<div style="position: absolute; top: 80px; font-size: 17px; font-weight: bolder; font-family: sans-serif;">
+		<?= Html::img('@web/images/' . $medio, ['style' => ['width' => '20px']]); ?>
+	</div>
 
-<?php if ($tiene_techo != "") { ?>
-<div style="position: absolute; top: 110px; font-size: 17px; font-weight: bolder; font-family: sans-serif;">
-	<?= Html::img('@backend/web/images/'.$tiene_techo, ['style'=> ['width' => '25px']]);?>
-</div>
-<?php } ?>
-
-<div align="right" style="text-transform: uppercase; font-size: 12px">Importe : <b><?= $model->monto_total ?> €</b>
-	<?php if ($model->cupon != NULL || $model->descuento == 'SI') { ?>
-		<br><span style="font-size:9px;">(Descuento Aplicado)</span>
+	<?php if ($tiene_techo != "") { ?>
+		<div style="position: absolute; top: 110px; font-size: 17px; font-weight: bolder; font-family: sans-serif;">
+			<?= Html::img('@backend/web/images/' . $tiene_techo, ['style' => ['width' => '25px']]); ?>
+		</div>
 	<?php } ?>
-</div>
-<div align="right" style="text-transform: uppercase; font-size: 12px">Teléfono : <b><?= $model->cliente->movil ?></b></div>
 
-<div align="center">
-	<?= Html::img('@backend/web/images/avion.png', ['style'=> ['width' => '3cm', 'height' => '1.7cm','margin' => '20px 0 0px 0']]);?>
-</div>
+	<div align="right" style="text-transform: uppercase; font-size: 17px;">
+		<span style="font-weight: normal;">Importe :</span> <b><?= Html::encode($model->monto_total) ?> €</b>
+		<?php if ($model->cupon != NULL || $model->descuento == 'SI') { ?>
+			<br><span style="font-size:9px; font-weight: normal;">(Descuento Aplicado)</span>
+		<?php } ?>
+	</div>
+	<div align="right" style="text-transform: uppercase; font-size: 17px;">
+		<span style="font-weight: normal;">Telf:</span> <b><?= Html::encode($model->cliente->movil) ?></b>
+	</div>
 
-<table style="margin-top: 0px; margin-left: -3px;">
-	<tr>
-		<td colspan="2" align="center" style="width: 7cm; text-transform: uppercase;">
-			Matrícula
-			<div align="center" style="width: 7cm; font-size: 36px"><?= $model->coche->matricula ?></div>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2" align="center" style="width: 3.5cm; text-transform: uppercase; padding-top: 10px">
-			Marca - Modelo
-			<div align="center" style="width: 3.5cm; font-size: 20px"><?= $model->coche->marca." ".$model->coche->modelo ?></div>
-		</td>
-	</tr>
+	<div align="center">
+		<?= Html::img('@backend/web/images/avion.png', ['style' => ['width' => '3cm', 'height' => '1.7cm', 'margin' => '20px 0 0px 0']]); ?>
+	</div>
 
-	<tr>
-		<td colspan="2" align="center" style="width: 7cm; text-transform: uppercase; padding-top: 15px">
-			Fecha de Entrada
-		</td>
-	</tr>
+	<table style="margin-top: 0px; margin-left: -3px;">
+		<tr>
+			<td colspan="2" align="center" style="width: 7cm; text-transform: uppercase;">
+				Matrícula
+				<div align="center" style="width: 7cm; font-size: 36px"><?= $model->coche->matricula ?></div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center" style="width: 3.5cm; text-transform: uppercase; padding-top: 10px">
+				Marca - Modelo
+				<div align="center" style="width: 3.5cm; font-size: 20px"><?= $model->coche->marca . " " . $model->coche->modelo ?></div>
+			</td>
+		</tr>
 
-	<tr>
-		<td style="width: 7cm; text-transform: uppercase; padding-left: 50px;">
-			<span align="center" style="font-size: 22px;"><?= date('d/m/Y', strtotime($model->fecha_entrada)) ?></span>
-		</td>
-		<td rowspan="2">
-			<span style="font-size: 22px; margin-left: 15px;">
-				<?php
+		<tr>
+			<td colspan="2" align="center" style="width: 7cm; text-transform: uppercase; padding-top: 15px">
+				Fecha de Entrada
+			</td>
+		</tr>
+
+		<tr>
+			<td style="width: 7cm; text-transform: uppercase; padding-left: 50px;">
+				<span align="center" style="font-size: 22px;"><?= date('d/m/Y', strtotime($model->fecha_entrada)) ?></span>
+			</td>
+			<td rowspan="2">
+				<span style="font-size: 22px; margin-left: 15px;">
+					<?php
 					if (empty($model->terminal_entrada) || $model->terminal_salida == "AUN NO CONOZCO LA TERMINAL") {
 						echo "T&nbsp;&nbsp;";
 					} else {
 						$term = explode(" ", $model->terminal_entrada);
-						echo "T".$term[1];
+						echo "T" . $term[1];
 					}
-				?>
-			</span>
-		</td>
-	</tr>
+					?>
+				</span>
+			</td>
+		</tr>
 
-	<tr>
-		<td style="width: 7cm; text-transform: uppercase; padding-left: 50px;">
-			<span align="center" style="font-size: 22px"><?= $model->hora_entrada ?></span>
-		</td>
-	</tr>
+		<tr>
+			<td style="width: 7cm; text-transform: uppercase; padding-left: 50px;">
+				<span align="center" style="font-size: 22px"><?= $model->hora_entrada ?></span>
+			</td>
+		</tr>
 
-	<tr>
-		<td colspan="2" align="center" style="width: 7cm; text-transform: uppercase; padding-top: 15px">
-			Fecha de Salida
-		</td>
-	</tr>
+		<tr>
+			<td colspan="2" align="center" style="width: 7cm; text-transform: uppercase; padding-top: 15px">
+				Fecha de Salida
+			</td>
+		</tr>
 
-	<tr>
-		<td style="width: 7cm; text-transform: uppercase; padding-left: 50px;">
-			<span align="center" style="font-size: 22px"><?= date('d/m/Y', strtotime($model->fecha_salida)) ?></span>
-		</td>
-		<td rowspan="2" style="padding-right: 25px">
-			<span style="font-size: 22px; margin-left: 15px;">
-				<?php
+		<tr>
+			<td style="width: 7cm; text-transform: uppercase; padding-left: 50px;">
+				<span align="center" style="font-size: 22px"><?= date('d/m/Y', strtotime($model->fecha_salida)) ?></span>
+			</td>
+			<td rowspan="2" style="padding-right: 25px">
+				<span style="font-size: 22px; margin-left: 15px;">
+					<?php
 					if (empty($model->terminal_salida) || $model->terminal_salida == "AUN NO CONOZCO LA TERMINAL") {
 						echo "T&nbsp;&nbsp;";
 					} else {
 						$term = explode(" ", $model->terminal_salida);
-						echo "T".$term[1];
+						echo "T" . $term[1];
 					}
-				?>
-			</span>
-		</td>			
-	</tr>
+					?>
+				</span>
+			</td>
+		</tr>
 
-	<tr>
-		<td style="width: 7cm; text-transform: uppercase; padding-left: 50px;">
-			<span align="center" style="font-size: 22px"><?= $model->hora_salida ?></span>
-		</td>
-	</tr>		
-				
-</table>
+		<tr>
+			<td style="width: 7cm; text-transform: uppercase; padding-left: 50px;">
+				<span align="center" style="font-size: 22px"><?= $model->hora_salida ?></span>
+			</td>
+		</tr>
 
-<hr style="margin: 5px 0px">
-<?php if ($contS > 0) { ?>
-<div style="margin-bottom: 3px"><b>INCLUYE:</b></div>
+	</table>
 
-
-<?php 
-	for ($i=0; $i < count($servicios) ; $i++) { 
-		if ($servicios[$i]->servicios->fijo == 2) { ?>
-			<div style="margin-bottom: 3px; text-transform: uppercase; font-size: 10px;"><?= $servicios[$i]->servicios->nombre_servicio ?></div>
-		<?php } 
-	} ?>
-
-<?php } ?>
-
-<div style="position: absolute; bottom: 0.5cm; font-size:10px; margin-right: 20px;">
-	<?php if ($model['id_tipo_pago'] == 5) { ?>
-		NOTA: LA RESERVA FUÉ PAGADA ONLINE
-	<?php } ?>	
-	<hr style="margin: 10px 0px">
-	Cliente: <?= $model->cliente->nombre_completo ?>
-</div>
+	<hr style="margin: 5px 0px">
+	<?php if ($contS > 0) { ?>
+		<div style="margin-bottom: 3px"><b>INCLUYE:</b></div>
 
 
+		<?php
+		for ($i = 0; $i < count($servicios); $i++) {
+			if ($servicios[$i]->servicios->fijo == 2) { ?>
+				<div style="margin-bottom: 3px; text-transform: uppercase; font-size: 10px;"><?= $servicios[$i]->servicios->nombre_servicio ?></div>
+		<?php }
+		} ?>
+
+	<?php } ?>
+
+	<div style="position: absolute; bottom: 0.5cm; font-size:10px; margin-right: 20px;">
+		<?php if ($model['id_tipo_pago'] == 5) { ?>
+			NOTA: LA RESERVA FUÉ PAGADA ONLINE
+		<?php } ?>
+		<hr style="margin: 10px 0px">
+		Cliente: <?= $model->cliente->nombre_completo ?>
+	</div>
