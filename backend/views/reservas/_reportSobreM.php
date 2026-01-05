@@ -3,39 +3,34 @@
 use yii\helpers\Html;
 
 for ($i = 0; $i < count($model); $i++) {
+	// Validamos existencia de coche para evitar errores
+	if (isset($model[$i]->coche)) {
+		$char_color[$i] = strlen($model[$i]->coche->color);
+		if ($char_color[$i] < 3) {
+			$color[$i] = 'N/D';
+		} else {
+			$color[$i] = $model[$i]->coche->color;
+		}
 
-	$char_color[$i] = strlen($model[$i]->coche->color);
+		if (empty($model[$i]->coche->matricula)) {
+			$model[$i]->coche->matricula = 'N/D';
+		}
 
-	if ($char_color[$i] < 3) {
-		$color[$i] = 'N/D';
-	} else {
-		$color[$i] = $model[$i]->coche->color;
+		if (empty($model[$i]->coche->marca)) {
+			$model[$i]->coche->marca = 'N/D';
+		}
 	}
 
-	if (empty($model[$i]->coche->matricula)) {
-		$model[$i]->coche->matricula = 'N/D';
-	}
-
-	if (empty($model[$i]->coche->marca)) {
-		$model[$i]->coche->marca = 'N/D';
-	}
-
-	if (empty($model[$i]->cliente->movil)) {
+	if (isset($model[$i]->cliente) && empty($model[$i]->cliente->movil)) {
 		$model[$i]->cliente->movil = 'N/D';
 	}
 
-	if ($model[$i]->medio_reserva === 1) {
-		$medio = 'phone-24.png';
-	}
-	if ($model[$i]->medio_reserva === 2) {
-		$medio = 'tags.png';
-	}
-	if ($model[$i]->medio_reserva === 3) {
-		$medio = 'browser.svg';
-	}
-	if ($model[$i]->medio_reserva === 4) {
-		$medio = 'afiliado.png';
-	}
+	// Lógica de iconos (usamos array para que no se sobrescriba en el bucle)
+	$medio_img[$i] = 'browser.svg';
+	if ($model[$i]->medio_reserva === 1) $medio_img[$i] = 'phone-24.png';
+	if ($model[$i]->medio_reserva === 2) $medio_img[$i] = 'tags.png';
+	if ($model[$i]->medio_reserva === 3) $medio_img[$i] = 'browser.svg';
+	if ($model[$i]->medio_reserva === 4) $medio_img[$i] = 'afiliado.png';
 }
 
 ?>
@@ -43,23 +38,23 @@ for ($i = 0; $i < count($model); $i++) {
 <?php
 for ($i = 0; $i < count($model); $i++) { ?>
 
-	<div style="margin-top: 1cm;font-size: 17px; font-weight: bolder; font-family: sans-serif;">
+	<div style="margin-top: 1cm; font-size: 22px; font-weight: bolder; font-family: sans-serif;">
 		<b><?= $model[$i]->nro_reserva ?></b>
 	</div>
 
 	<div style="margin-top: 1cm;">
-		<?= Html::img('@web/images/' . $medio, ['style' => ['width' => '20px']]); ?>
+		<?= Html::img('@web/images/' . $medio_img[$i], ['style' => ['width' => '20px']]); ?>
 	</div>
 
 	<?php
-	for ($l = 0; $l < count($servicios[$i]); $l++) {
-		if ($servicios[$i][$l]->servicios->id == 9) { ?>
-
-			<div style="position: absolute; top: 110px; font-size: 17px; font-weight: bolder; font-family: sans-serif;">
-				<?= Html::img('@web/images/techado.png', ['style' => ['width' => '25px']]); ?>
-			</div>
-
+	if (isset($servicios[$i])) {
+		for ($l = 0; $l < count($servicios[$i]); $l++) {
+			if (isset($servicios[$i][$l]->servicios) && $servicios[$i][$l]->servicios->id == 9) { ?>
+				<div style="position: absolute; top: 110px; font-size: 17px; font-weight: bolder; font-family: sans-serif;">
+					<?= Html::img('@web/images/techado.png', ['style' => ['width' => '25px']]); ?>
+				</div>
 	<?php }
+		}
 	}
 	?>
 
@@ -73,34 +68,36 @@ for ($i = 0; $i < count($model); $i++) { ?>
 		<b><?= date('H i', strtotime($model[$i]->created_at)) ?></b>
 	</div>
 
-	<!-- CORRECCIÓN DE NEGRILLA PARA 'IMPORTE :' -->
-	<div align="right" style="text-transform: uppercase; font-size: 12px">
+	<div align="right" style="text-transform: uppercase; font-size: 17px;">
 		<span style="font-weight: normal;">Importe :</span> <b><?= $model[$i]->monto_total ?> €</b>
 		<?php if ($model[$i]->cupon != null || $model[$i]->descuento == 'SI') { ?>
-			<br><span style="font-size:9px;">(Descuento Aplicado)</span>
+			<br><span style="font-size:10px;">(Descuento Aplicado)</span>
 		<?php } ?>
 	</div>
-	<!-- CORRECCIÓN DE NEGRILLA PARA 'Teléfono :' -->
-	<div align="right" style="text-transform: uppercase; font-size: 12px">
-		<span style="font-weight: normal;">Telf :</span>
-		<b><?= $model[$i]->cliente->movil ?></b>
+
+	<div align="right" style="text-transform: uppercase; font-size: 17px;">
+		<span style="font-weight: normal;">Teléfono :</span>
+		<b><?= isset($model[$i]->cliente) ? $model[$i]->cliente->movil : 'N/D' ?></b>
 	</div>
 
 	<div align="center">
-		<?= Html::img('@backend/web/images/avion.png', ['style' => ['width' => '3cm', 'height' => '1.8cm', 'margin' => '15px 0 0px 0']]); ?>
+		<?= Html::img('@backend/web/images/avion.png', ['style' => ['width' => '3cm', 'height' => '1.7cm', 'margin' => '15px 0 0px 0']]); ?>
 	</div>
+
 	<table style="margin-top: 0px; margin-left: -3px;">
 		<tr>
 			<td colspan="2" align="center" style="width: 7cm; text-transform: uppercase;">
 				Matrícula
-				<div align="center" style="width: 7cm; font-size: 36px"><?= $model[$i]->coche->matricula ?></div>
+				<div align="center" style="width: 7cm; font-size: 36px">
+					<?= isset($model[$i]->coche) ? $model[$i]->coche->matricula : 'N/D' ?>
+				</div>
 			</td>
 		</tr>
 		<tr>
 			<td colspan="2" align="center" style="width: 3.5cm; text-transform: uppercase; padding-top: 10px">
 				Marca - Modelo
 				<div align="center" style="width: 3.5cm; font-size: 20px">
-					<?= $model[$i]->coche->marca . " " . $model[$i]->coche->modelo ?>
+					<?= isset($model[$i]->coche) ? ($model[$i]->coche->marca . " " . $model[$i]->coche->modelo) : 'N/D' ?>
 				</div>
 			</td>
 		</tr>
@@ -113,17 +110,16 @@ for ($i = 0; $i < count($model); $i++) { ?>
 
 		<tr>
 			<td style="width: 7cm; text-transform: uppercase; padding-left: 50px;">
-				<span align="center"
-					style="font-size: 22px;"><?= date('d/m/Y', strtotime($model[$i]->fecha_entrada)) ?></span>
+				<span align="center" style="font-size: 22px;"><?= date('d/m/Y', strtotime($model[$i]->fecha_entrada)) ?></span>
 			</td>
 			<td rowspan="2">
 				<span style="font-size: 22px; margin-left: 15px;">
 					<?php
-					if (empty($model[$i]->terminal_entrada) || $model[$i]->terminal_entrada == "AUN NO CONOZCO LA TERMINAL") {
+					if (empty($model[$i]->terminal_entrada)) {
 						echo "T&nbsp;&nbsp;";
 					} else {
 						$term = explode(" ", $model[$i]->terminal_entrada);
-						echo "T" . $term[1];
+						echo "T" . (isset($term[1]) ? $term[1] : "");
 					}
 					?>
 				</span>
@@ -144,17 +140,16 @@ for ($i = 0; $i < count($model); $i++) { ?>
 
 		<tr>
 			<td style="width: 7cm; text-transform: uppercase; padding-left: 50px;">
-				<span align="center"
-					style="font-size: 22px"><?= date('d/m/Y', strtotime($model[$i]->fecha_salida)) ?></span>
+				<span align="center" style="font-size: 22px"><?= date('d/m/Y', strtotime($model[$i]->fecha_salida)) ?></span>
 			</td>
 			<td rowspan="2" style="padding-right: 25px">
 				<span style="font-size: 22px; margin-left: 15px;">
 					<?php
-					if (empty($model[$i]->terminal_salida) || $model[$i]->terminal_salida == "AUN NO CONOZCO LA TERMINAL") {
+					if (empty($model[$i]->terminal_salida)) {
 						echo "T&nbsp;&nbsp;";
 					} else {
 						$term = explode(" ", $model[$i]->terminal_salida);
-						echo "T" . $term[1];
+						echo "T" . (isset($term[1]) ? $term[1] : "");
 					}
 					?>
 				</span>
@@ -166,50 +161,39 @@ for ($i = 0; $i < count($model); $i++) { ?>
 				<span align="center" style="font-size: 22px"><?= $model[$i]->hora_salida ?></span>
 			</td>
 		</tr>
-
 	</table>
 
 	<hr style="margin: 5px 0px">
+
 	<?php if (isset($contS[$i]) && $contS[$i] > 0) { ?>
 		<div style="margin-bottom: 5px"><b>INCLUYE:</b></div>
-
-
 		<?php
-		for ($l = 0; $l < count($servicios[$i]); $l++) {
-			$c = 0;
-
-			if ($servicios[$i][$l]->servicios->fijo == 2) {
-				$c++;
-		?>
-				<div style="margin-bottom: 2px; text-transform: uppercase; font-size: 10px;">
-					<?= $servicios[$i][$l]->servicios->nombre_servicio ?>
-				</div>
-
+		if (isset($servicios[$i])) {
+			for ($l = 0; $l < count($servicios[$i]); $l++) {
+				if (isset($servicios[$i][$l]->servicios) && $servicios[$i][$l]->servicios->fijo == 2) { ?>
+					<div style="margin-bottom: 2px; text-transform: uppercase; font-size: 10px;">
+						<?= $servicios[$i][$l]->servicios->nombre_servicio ?>
+					</div>
 		<?php }
+			}
 		}
 		?>
-
 	<?php } ?>
 
 	<?php
-	// He añadido isset() a $contS[$i] para evitar un posible error si esa variable no está definida
-	if (isset($contS[$i]) && $contS[$i] == 0) {
-		echo "<br><br><br><br><br><br><br><br><br><br>";
-	}
-	if (isset($contS[$i]) && $contS[$i] == 1) {
-		echo "<br><br><br><br><br><br><br>";
-	}
-	if (isset($contS[$i]) && $contS[$i] == 2) {
-		echo "<br><br><br><br><br>";
+	if (isset($contS[$i])) {
+		if ($contS[$i] == 0) echo str_repeat("<br>", 10);
+		elseif ($contS[$i] == 1) echo str_repeat("<br>", 7);
+		elseif ($contS[$i] == 2) echo str_repeat("<br>", 5);
 	}
 	?>
+
 	<div style="position: absolute; bottom: 0.3cm; font-size:10px; margin-right:20px;">
-		<?php if ($model[$i]['id_tipo_pago'] == 5) { ?>
+		<?php if (isset($model[$i]->id_tipo_pago) && $model[$i]->id_tipo_pago == 5) { ?>
 			NOTA: LA RESERVA FUÉ PAGADA ONLINE
 		<?php } ?>
 		<hr style="margin: 2% 0%">
-		Cliente: <?= $model[$i]->cliente->nombre_completo ?>
+		Cliente: <?= isset($model[$i]->cliente) ? $model[$i]->cliente->nombre_completo : 'N/D' ?>
 	</div>
 
-<?php }
-?>
+<?php } ?>
