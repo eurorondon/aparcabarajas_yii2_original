@@ -43,20 +43,20 @@ for ($i = 0; $i < count($model); $i++) {
 <?php
 for ($i = 0; $i < count($model); $i++) { ?>
 
-	<div style="margin-top: 1cm;font-size: 17px; font-weight: bolder; font-family: sans-serif;">
-		<b><?= $model[$i]->nro_reserva ?></b>
-	</div>
+        <div style="position: absolute; font-size: 17px; font-weight: bolder; font-family: sans-serif;">
+                <b><?= $model[$i]->nro_reserva ?></b>
+        </div>
 
-	<div style="margin-top: 1cm;">
-		<?= Html::img('@web/images/' . $medio, ['style' => ['width' => '20px']]); ?>
-	</div>
+        <div style="position: absolute; top: 80px; font-size: 17px; font-weight: bolder; font-family: sans-serif;">
+                <?= Html::img('@web/images/' . $medio, ['style' => ['width' => '20px']]); ?>
+        </div>
 
 	<?php
 	for ($l = 0; $l < count($servicios[$i]); $l++) {
 		if ($servicios[$i][$l]->servicios->id == 9) { ?>
 
-			<div style="position: absolute; top: 110px; font-size: 17px; font-weight: bolder; font-family: sans-serif;">
-				<?= Html::img('@web/images/techado.png', ['style' => ['width' => '25px']]); ?>
+                        <div style="position: absolute; top: 110px; font-size: 17px; font-weight: bolder; font-family: sans-serif;">
+                                <?= Html::img('@backend/web/images/techado.png', ['style' => ['width' => '25px']]); ?>
 			</div>
 
 	<?php }
@@ -74,20 +74,20 @@ for ($i = 0; $i < count($model); $i++) { ?>
 	</div>
 
 	<!-- CORRECCIÓN DE NEGRILLA PARA 'IMPORTE :' -->
-	<div align="right" style="text-transform: uppercase; font-size: 12px">
-		<span style="font-weight: normal;">Importe :</span> <b><?= $model[$i]->monto_total ?> €</b>
-		<?php if ($model[$i]->cupon != null || $model[$i]->descuento == 'SI') { ?>
-			<br><span style="font-size:9px;">(Descuento Aplicado)</span>
-		<?php } ?>
-	</div>
-	<!-- CORRECCIÓN DE NEGRILLA PARA 'Teléfono :' -->
-	<div align="right" style="text-transform: uppercase; font-size: 12px">
-		<span style="font-weight: normal;">Telf :</span>
-		<b><?= $model[$i]->cliente->movil ?></b>
-	</div>
+        <div align="right" style="text-transform: uppercase; font-size: 17px;">
+                <span style="font-weight: normal;">Importe :</span> <b><?= $model[$i]->monto_total ?> €</b>
+                <?php if ($model[$i]->cupon != null || $model[$i]->descuento == 'SI') { ?>
+                        <br><span style="font-size:9px; font-weight: normal;">(Descuento Aplicado)</span>
+                <?php } ?>
+        </div>
+        <!-- CORRECCIÓN DE NEGRILLA PARA 'Teléfono :' -->
+        <div align="right" style="text-transform: uppercase; font-size: 17px;">
+                <span style="font-weight: normal;">Telf:</span>
+                <b><?= $model[$i]->cliente->movil ?></b>
+        </div>
 
-	<div align="center">
-		<?= Html::img('@backend/web/images/avion.png', ['style' => ['width' => '3cm', 'height' => '1.8cm', 'margin' => '15px 0 0px 0']]); ?>
+        <div align="center">
+                <?= Html::img('@backend/web/images/avion.png', ['style' => ['width' => '3cm', 'height' => '1.7cm', 'margin' => '20px 0 0px 0']]); ?>
 	</div>
 	<table style="margin-top: 0px; margin-left: -3px;">
 		<tr>
