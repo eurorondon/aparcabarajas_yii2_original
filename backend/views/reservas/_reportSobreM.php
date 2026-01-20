@@ -76,7 +76,7 @@ for ($i = 0; $i < count($model); $i++) { ?>
 	</div>
 
 	<div align="right" style="text-transform: uppercase; font-size: 17px;">
-		<span style="font-weight: normal;">Teléfono :</span>
+		<span style="font-weight: normal;">Teléfono:</span>
 		<b><?= isset($model[$i]->cliente) ? $model[$i]->cliente->movil : 'N/D' ?></b>
 	</div>
 

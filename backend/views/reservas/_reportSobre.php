@@ -45,7 +45,7 @@ foreach ($servicios as $servicie) {
 
 ?>
 
-<<div style="position: absolute; font-size: 17px; font-weight: bolder; font-family: sans-serif;"><b><?= $model->nro_reserva ?></b></div>
+<<div style="position: absolute; font-size: 22px; font-weight: bolder; font-family: sans-serif;"><b><?= $model->nro_reserva ?></b></div>
 	<div style="position: absolute; top: 43px; font-size: 12px; font-weight: bolder; font-family: sans-serif;">
 		<b>FC: <?= date('d m Y', strtotime($model->created_at)) ?></b>
 	</div>
@@ -70,7 +70,7 @@ foreach ($servicios as $servicie) {
 		<?php } ?>
 	</div>
 	<div align="right" style="text-transform: uppercase; font-size: 17px;">
-		<span style="font-weight: normal;">Telf:</span> <b><?= Html::encode($model->cliente->movil) ?></b>
+		<span style="font-weight: normal;">Teléfono:</span> <b><?= Html::encode($model->cliente->movil) ?></b>
 	</div>
 
 	<div align="center">
